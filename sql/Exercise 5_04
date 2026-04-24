@@ -1,0 +1,30 @@
+(SELECT 'In Staging but not Catalog' AS "Anomaly", 'Account' AS "Table", column_name AS "Column"
+FROM Salesforce.information_schema.columns 
+WHERE UPPER(table_catalog) = 'SALESFORCE' AND UPPER(table_schema) = 'STAGING' AND UPPER(table_name) = 'ACCOUNT'
+MINUS
+SELECT 'In Staging but not Catalog', 'Account' AS "Table", UPPER(sa.name) AS "Column"
+FROM Catalog.public.source_system ss
+JOIN Catalog.public.source_table st ON st.source_system_id = ss.id
+JOIN Catalog.public.source_attribute sa ON sa.source_table_id = st.id
+WHERE UPPER(ss.name) = 'SALESFORCE' AND UPPER(st.name) = 'ACCOUNT')
+
+UNION
+
+(SELECT 'In Catalog but not Staging' AS "Anomaly", 'Account' AS "Table", UPPER(sa.name) AS "Column"
+FROM Catalog.public.source_system ss
+JOIN Catalog.public.source_table st ON st.source_system_id = ss.id
+JOIN Catalog.public.source_attribute sa ON sa.source_table_id = st.id
+WHERE UPPER(ss.name) = 'SALESFORCE' AND UPPER(st.name) = 'ACCOUNT'
+MINUS
+SELECT 'In Catalog but not Staging' AS "Anomaly", 'Account' AS "Table", column_name AS "Column"
+FROM Salesforce.information_schema.columns 
+WHERE UPPER(table_catalog) = 'SALESFORCE' AND UPPER(table_schema) = 'STAGING' AND UPPER(table_name) = 'ACCOUNT')
+
+UNION
+
+SELECT 'Different data types... Metadata says '||LOWER(sa.datahub_datatype)||'; raw file says '||LOWER(isc.data_type) AS "Anomaly", 'Account' AS "Table", UPPER(sa.name) AS "Column"
+FROM Catalog.public.source_system ss
+JOIN Catalog.public.source_table st ON st.source_system_id = ss.id
+JOIN Catalog.public.source_attribute sa ON sa.source_table_id = st.id
+JOIN Salesforce.information_schema.columns isc ON UPPER(isc.table_name) = UPPER(st.name) AND UPPER(isc.column_name) = UPPER(sa.name)
+WHERE UPPER(ss.name) = 'SALESFORCE' AND UPPER(st.name) = 'ACCOUNT' AND LOWER(sa.datahub_datatype) <> LOWER(isc.data_type);
