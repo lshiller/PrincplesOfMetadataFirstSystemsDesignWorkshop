@@ -1,0 +1,5 @@
+SELECT UPPER(sa.name) AS column_name, UPPER(sa.datahub_datatype) AS data_type
+FROM Catalog.public.source_system ss
+JOIN Catalog.public.source_table st ON st.source_system_id = ss.id
+JOIN Catalog.public.source_attribute sa ON sa.source_table_id = st.id
+WHERE UPPER(ss.name) = 'SALESFORCE' AND UPPER(st.name) = 'ACCOUNT';
