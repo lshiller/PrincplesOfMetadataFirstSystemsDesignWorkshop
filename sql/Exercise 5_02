@@ -1,0 +1,3 @@
+SELECT column_name, data_type
+FROM Salesforce.information_schema.columns
+WHERE UPPER(table_catalog) = 'SALESFORCE' AND UPPER(table_schema) = 'STAGING' AND UPPER(table_name) = 'ACCOUNT';
