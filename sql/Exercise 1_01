@@ -1,1 +1,24 @@
-
+CREATE OR REPLACE DATABASE Catalog;
+CREATE TABLE Catalog.public.source_system (
+    id INT AUTOINCREMENT PRIMARY KEY,
+    name STRING,
+    original_name STRING,
+    created_at TIMESTAMP DEFAULT CONVERT_TIMEZONE('UTC', CURRENT_TIMESTAMP())::TIMESTAMPNTZ
+);
+CREATE TABLE Catalog.public.source_table (
+    id INT AUTOINCREMENT PRIMARY KEY,
+    source_system_id INT,
+    name STRING,
+    original_name STRING,
+    created_at TIMESTAMP DEFAULT CONVERT_TIMEZONE('UTC', CURRENT_TIMESTAMP())::TIMESTAMPNTZ,
+    FOREIGN KEY (source_system_id) REFERENCES Catalog.public.source_system(id)
+);
+CREATE TABLE Catalog.public.source_attribute (
+    id INT AUTOINCREMENT PRIMARY KEY,
+    source_table_id INT,
+    name STRING,
+    original_name STRING,
+    datatype STRING,
+    created_at TIMESTAMP DEFAULT CONVERT_TIMEZONE('UTC', CURRENT_TIMESTAMP())::TIMESTAMPNTZ,
+    FOREIGN KEY (source_table_id) REFERENCES Catalog.public.source_table(id)
+);
