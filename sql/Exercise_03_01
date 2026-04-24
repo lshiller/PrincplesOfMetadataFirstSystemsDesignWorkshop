@@ -1,0 +1,12 @@
+INSERT INTO Catalog.public.source_system (name, original_name)
+SELECT 'Salesforce', 'Salesforce';
+INSERT INTO Catalog.public.source_table (source_system_id, name, original_name)
+SELECT id, 'Account', 'Account' FROM Catalog.public.source_system WHERE name = 'Salesforce'
+UNION SELECT id, 'Opportunity', 'Opportunity' FROM Catalog.public.source_system WHERE name = 'Salesforce';
+INSERT INTO Catalog.public.source_attribute (source_table_id, name, original_name, datahub_datatype)
+SELECT st.id, 'Name', 'Name', 'text' FROM Catalog.public.source_table st JOIN Catalog.public.source_system ss ON st.source_system_id = ss.id WHERE st.name = 'Account' AND ss.name = 'Salesforce'
+UNION SELECT st.id, 'AccountId', 'AccountId', 'text' FROM Catalog.public.source_table st JOIN Catalog.public.source_system ss ON st.source_system_id = ss.id WHERE st.name = 'Account' AND ss.name = 'Salesforce'
+UNION SELECT st.id, 'BillingCountry', 'BillingCountry', 'text' FROM Catalog.public.source_table st JOIN Catalog.public.source_system ss ON st.source_system_id = ss.id WHERE st.name = 'Account' AND ss.name = 'Salesforce'
+UNION SELECT st.id, 'Name', 'Name', 'text' FROM Catalog.public.source_table st JOIN Catalog.public.source_system ss ON st.source_system_id = ss.id WHERE st.name = 'Opportunity' AND ss.name = 'Salesforce'
+UNION SELECT st.id, 'OpportunityId', 'OpportunityId', 'text' FROM Catalog.public.source_table st JOIN Catalog.public.source_system ss ON st.source_system_id = ss.id WHERE st.name = 'Opportunity' AND ss.name = 'Salesforce'
+UNION SELECT st.id, 'StageName', 'StageName', 'text' FROM Catalog.public.source_table st JOIN Catalog.public.source_system ss ON st.source_system_id = ss.id WHERE st.name = 'Opportunity' AND ss.name = 'Salesforce';
