@@ -1,0 +1,3 @@
+SELECT * FROM Catalog.public.source_system;
+SELECT * FROM Catalog.public.source_table;
+SELECT * FROM Catalog.public.source_attribute;
