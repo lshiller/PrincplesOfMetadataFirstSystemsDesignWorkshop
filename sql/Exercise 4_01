@@ -1,0 +1,4 @@
+USE DATABASE Catalog;
+CREATE DATABASE Salesforce;
+USE DATABASE Salesforce;
+CREATE SCHEMA Salesforce.Staging;
